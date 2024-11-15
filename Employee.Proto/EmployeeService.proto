@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "WorkerStream.proto";
+import "wrappers.proto";
+
+option csharp_namespace = "Employee.Proto";
+
+package employee;
+
+// переиспользуем здесь частично модели из прото WorkerStream
+service EmployeeService {
+  rpc Create (WorkerMessage) returns (IdModel);
+  rpc Update (WorkerMessage) returns (EmptyMessage);
+  rpc Delete (IdModel) returns (EmptyMessage);
+  rpc GetList (GetListModel) returns (WorkerMessages);
+}
+
+message IdModel {
+  int64 Id = 1;
+}
+
+message GetListModel {
+  repeated int64 Ids = 1;
+  repeated string LastNames = 2;
+  repeated string FirstNames = 3;
+  repeated string MiddleNames = 4;
+  google.protobuf.Int64Value MinBirthDay = 5;
+  google.protobuf.Int64Value MaxBirthDay = 6;
+  google.protobuf.BoolValue HaveChildren = 7;
+  repeated Sex Sexes = 8;
+  google.protobuf.StringValue PartOfLastName = 9;
+  google.protobuf.StringValue PartOfFirstName = 10;
+  int32 Page = 11;
+  int32 PageSize = 12;
+}
+
+message WorkerMessages {
+  repeated WorkerMessage Workers = 1;
+}

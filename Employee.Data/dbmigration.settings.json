@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "EmployeeDbContext": "Server=localhost,5432;Database=EmployeeDb;User Id=postgres;Password=postgres;"
+  }
+}
