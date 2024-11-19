@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
-using Employee.Service.Exceptions;
+using Employee.RpcService.Exceptions;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Employee.Service.Helpers;
+namespace Employee.RpcService.Helpers;
 
 public static class DbContextHelpers
 {

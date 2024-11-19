@@ -1,6 +1,6 @@
 using Grpc.Core;
 
-namespace Employee.Service.Exceptions;
+namespace Employee.RpcService.Exceptions;
 
 public class InvalidArgumentEmployeeException : EmployeeException
 {

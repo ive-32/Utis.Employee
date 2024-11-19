@@ -1,0 +1,114 @@
+@using Employee.Client.Dtos
+@using Employee.Proto
+@using Google.Protobuf.WellKnownTypes
+@using Grpc.Core
+@using Utis.Minex.WrokerIntegration
+@using Enum = System.Enum
+@inject EmployeeService.EmployeeServiceClient EmployeeServiceClient
+
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+
+    [Parameter] public EmployeeDto EmployeeDto { get; set; } = default!;
+
+    private void Close()
+    {
+        IsOpen = false;
+        IsOpenChanged.InvokeAsync(false);
+    }
+
+    private async Task Submit()
+    {
+        var workerMessage = EmployeeDto.GetWorkerMessage();
+
+        try
+        {
+            if (EmployeeDto.Id == null)
+            {
+                await EmployeeServiceClient.CreateAsync(workerMessage);
+            }
+            else
+            {
+                await EmployeeServiceClient.UpdateAsync(workerMessage);
+            }
+
+            IsOpen = false;
+            await IsOpenChanged.InvokeAsync(true);
+        }
+        catch (RpcException)
+        {
+        }
+    }
+}
+
+@if (IsOpen)
+{
+    <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Карточка сотрудника</h5>
+                    <button type="button" class="close" @onclick="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   <table class="table">
+                       <tr>
+                           <td>Фамилия</td>
+                           <td>
+                               <InputText maxlength="450" 
+                                          placeholder="Фамилия сотрудника"
+                                          size="50" 
+                                          @bind-Value="EmployeeDto.LastName"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Имя</td>
+                           <td>
+                               <InputText maxlength="450" placeholder="Имя сотрудника"
+                                          size="50" @bind-Value="EmployeeDto.FirstName"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Отчество</td>
+                           <td>
+                               <InputText maxlength="250" placeholder="Отчество сотрудника"
+                                          size="50" @bind-Value="EmployeeDto.MiddleName"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Дата рождения</td>
+                           <td>
+                               <InputDate TValue="DateOnly" @bind-Value="EmployeeDto.BirthDay"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Пол</td>
+                           <td>
+                               <InputSelect TValue="Sex" @bind-Value="EmployeeDto.Sex">
+                                   @foreach (var sex in Enum.GetValues<Sex>())
+                                       {
+                                           <option value="@sex">@sex.ToString()</option>
+                                       }
+                               </InputSelect>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>Наличие детей</td>
+                           <td>
+                               <InputCheckbox @bind-Value="EmployeeDto.HaveChildren"/>
+                           </td>
+                       </tr>
+                   </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="Submit">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" @onclick="Close">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

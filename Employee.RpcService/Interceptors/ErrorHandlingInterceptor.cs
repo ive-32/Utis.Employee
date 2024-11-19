@@ -1,9 +1,9 @@
 using System.Text;
-using Employee.Service.Exceptions;
+using Employee.RpcService.Exceptions;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 
-namespace Employee.Service.Interceptors;
+namespace Employee.RpcService.Interceptors;
 
 public class ExceptionHandlingServerInterceptor : Interceptor
 {

@@ -1,7 +1,7 @@
 using Employee.Proto;
 using Utis.Minex.WrokerIntegration;
 
-namespace Employee.Service.Services;
+namespace Employee.RpcService.Services;
 
 public interface IEmployeeService
 {

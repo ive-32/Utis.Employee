@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using Employee.Service.Exceptions;
+using Employee.RpcService.Exceptions;
 
-namespace Employee.Service.Helpers;
+namespace Employee.RpcService.Helpers;
 
 public static class ValidationHelpers
 {

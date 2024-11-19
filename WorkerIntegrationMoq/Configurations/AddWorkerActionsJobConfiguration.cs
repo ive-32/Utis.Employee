@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace WorkerIntegrationMoq.Configurations;
 
 public class AddWorkerActionsJobConfiguration

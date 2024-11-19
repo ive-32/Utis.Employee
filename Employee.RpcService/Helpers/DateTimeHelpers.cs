@@ -1,4 +1,4 @@
-namespace Employee.Service.Helpers;
+namespace Employee.RpcService.Helpers;
 
 public static class DateTimeHelpers
 {

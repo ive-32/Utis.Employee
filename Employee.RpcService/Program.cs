@@ -1,10 +1,10 @@
-namespace Employee.Service;
+namespace Employee.RpcService;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        Console.Title = "Employee.Service gRpc Host";
+        Console.Title = "Employee.RpcService gRpc Host";
         CreateHostBuilder(args).Build().Run();
     }
     

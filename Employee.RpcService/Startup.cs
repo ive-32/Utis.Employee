@@ -1,11 +1,11 @@
 using Employee.Data;
 using Employee.Data.Extensions;
-using Employee.Service.Interceptors;
-using Employee.Service.RpcServices;
-using Employee.Service.Services;
+using Employee.RpcService.Interceptors;
+using Employee.RpcService.RpcServices;
+using Employee.RpcService.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Employee.Service;
+namespace Employee.RpcService;
 
 public class Startup
 {

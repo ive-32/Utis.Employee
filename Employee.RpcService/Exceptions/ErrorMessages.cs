@@ -1,4 +1,4 @@
-namespace Employee.Service.Exceptions;
+namespace Employee.RpcService.Exceptions;
 
 public static class ErrorMessages
 {

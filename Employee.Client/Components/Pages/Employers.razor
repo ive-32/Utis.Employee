@@ -1,0 +1,141 @@
+﻿@page "/"
+
+@using Employee.Proto
+@using Grpc.Core
+@using Employee.Client.Dtos
+@using Google.Protobuf.WellKnownTypes
+
+@attribute [StreamRendering]
+
+@inject EmployeeService.EmployeeServiceClient EmployeeServiceClient
+
+@rendermode InteractiveServer
+
+<PageTitle>Сотрудники</PageTitle>
+
+<h1>Сотрудники</h1>
+
+<p>Список сотрудников</p>
+
+@if (_employersDtos == null)
+{
+    if (_employeeServiceUnavailable)
+    {
+        <p>
+            <em> "Service unavailable..." </em>
+        </p>
+    }
+    else
+    {
+        <p>
+            <em> Loading...</em>
+        </p>
+    }
+}
+else
+{
+    <p><InputText placeholder="Поиск по фамилии" 
+                  @bind-Value="_partOfLastName"
+                  @oninput="v => SetValueAsync((string) v.Value!)"
+                  /></p>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Дата рождения</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var employee in _employersDtos)
+        {
+            <tr>
+                <td>@employee.LastName</td>
+                <td>@employee.FirstName</td>
+                <td>@employee.MiddleName</td>
+                <td>@employee.BirthDay.ToShortDateString()</td>
+                <td><button class="btn btn-primary" @onclick="() => OpenModal(employee)">Edit</button></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<EditEmployeeModal IsOpen="@_isEmployeeEditMode" IsOpenChanged="@OnModalClose" EmployeeDto="@_currentEmployeeDto" />
+
+@code {
+    private string _partOfLastName = string.Empty;
+    private EmployeeDto[]? _employersDtos;
+    private EmployeeDto? _currentEmployeeDto;
+    private bool _employeeServiceUnavailable;
+
+    private bool _isEmployeeEditMode = false;
+
+    private void OpenModal(EmployeeDto employeeDto)
+    {
+        _currentEmployeeDto = new EmployeeDto(employeeDto);
+        _isEmployeeEditMode = true;
+    }
+
+    private async Task OnModalClose(bool isChanged)
+    {
+        if (isChanged)
+        {
+            var workerMessage = _currentEmployeeDto!.GetWorkerMessage();
+
+            try
+            {
+                if (_currentEmployeeDto.Id == null)
+                {
+                    var id = await EmployeeServiceClient.CreateAsync(workerMessage);
+                    _currentEmployeeDto.Id = id.Id;
+                }
+                else
+                {
+                    await EmployeeServiceClient.UpdateAsync(workerMessage);
+                }
+
+                for (var i = 0; i < _employersDtos!.Length; i++)
+                {
+                    if (_employersDtos![i].Id == _currentEmployeeDto.Id)
+                        _employersDtos![i] = _currentEmployeeDto;
+                }
+            }
+            catch (RpcException)
+            {
+            }
+        }
+        _isEmployeeEditMode = false;
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GetEmployeeList();
+    }
+
+    private async Task SetValueAsync(string value)
+    {
+        _partOfLastName = value;
+        await GetEmployeeList();
+    }
+    
+    private async Task GetEmployeeList()
+    {
+        try
+        {
+            var getListModel = new GetListModel()
+            {
+                PartOfLastName = string.IsNullOrEmpty(_partOfLastName) ? null : new StringValue() { Value = _partOfLastName }
+            };
+            var employers = await EmployeeServiceClient.GetListAsync(getListModel);
+
+            _employersDtos = employers.Workers.Select(e => new EmployeeDto(e)).ToArray();
+            StateHasChanged();
+        }
+        catch (RpcException)
+        {
+            _employeeServiceUnavailable = true;
+        }
+    }
+}

@@ -2,13 +2,13 @@ using System.Data.Common;
 using Employee.Data;
 using Employee.Data.Entities;
 using Employee.Proto;
-using Employee.Service.Exceptions;
-using Employee.Service.Helpers;
+using Employee.RpcService.Exceptions;
+using Employee.RpcService.Helpers;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using Utis.Minex.WrokerIntegration;
 
-namespace Employee.Service.Services;
+namespace Employee.RpcService.Services;
 
 public class EmployeeService : IEmployeeService
 {

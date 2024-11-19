@@ -1,13 +1,10 @@
 using Employee.Proto;
-using Employee.Service.Helpers;
-using Employee.Service.Services;
+using Employee.RpcService.Helpers;
+using Employee.RpcService.Services;
 using Grpc.Core;
 using Utis.Minex.WrokerIntegration;
-using EmployeeService = Employee.Proto.EmployeeService; // опечатка в прото файле -
-                                    // неймспейс менять не стал - т.к. не знаю в каких сервисах еще используется
-                                    // и сколько будет стоить это переименование  
-
-namespace Employee.Service.RpcServices;
+using EmployeeService = Employee.Proto.EmployeeService; 
+namespace Employee.RpcService.RpcServices;
 
 public class EmployeeRpcService : EmployeeService.EmployeeServiceBase
 {
